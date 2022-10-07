@@ -1,0 +1,15 @@
+{
+  "name": "npm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "João Pedro",
+  "license": "MIT License",
+  "dependencies": {
+    "cfonts": "^3.1.0"
+  }
+}
