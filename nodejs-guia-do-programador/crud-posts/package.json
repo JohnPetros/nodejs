@@ -1,0 +1,18 @@
+{
+  "name": "crud-posts",
+  "version": "1.0.0",
+  "description": "Projeto de CRUD de postagens",
+  "main": "app.js",
+  "scripts": {},
+  "author": "João Pedro",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.25.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
