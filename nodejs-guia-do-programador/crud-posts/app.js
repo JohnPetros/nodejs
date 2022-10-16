@@ -2,22 +2,35 @@ const express = require("express");
 const app = express();
 const handlebars = require("express-handlebars");
 const bodyParser = require("body-parser");
+const Post = require("./models/Post");
 
 // Config Template Engine
 app.engine("handlebars", handlebars.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Config Body Parser
-app.use(express.urlencoded({extended:false}))
-app.use(express.json())
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Routes
+app.get("/", function(req, res) {
+    res.render("home")
+})
+
 app.get("/cad", function (req, res) {
   res.render("form");
 });
 app.post("/add", function (req, res) {
-  req.body.content;
-  res.send(`Texto: ${req.body.title} <br> Conteúdo: ${req.body.content}`);
+  Post.create({
+    title: req.body.title,
+    content: req.body.content,
+  })
+    .then(function () {
+      res.redirect("/");
+    })
+    .catch(function (err) {
+      res.send("Houve um error: " + err.message);
+    });
 });
 
 app.listen(8081, function () {
