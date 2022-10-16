@@ -2,21 +2,14 @@ const express = require("express");
 const app = express();
 const handlebars = require("express-handlebars");
 const bodyParser = require("body-parser");
-const Sequelize = require("sequelize");
 
 // Config Template Engine
 app.engine("handlebars", handlebars.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Config Body Parser
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-// Conection to MySql database
-const sequelize = new Sequelize("test", "root", "123456", {
-  host: "localhost",
-  dialect: "mysql",
-});
+app.use(express.urlencoded({extended:false}))
+app.use(express.json())
 
 // Routes
 app.get("/cad", function (req, res) {
