@@ -17,7 +17,6 @@ const sequelize = new Sequelize("test", "root", "123456", {
 app.get("/cad", function (req, res) {
   res.render("form")
 });
-
 app.post("/add", function (req, res) {
     res.send("Formulário recebido");
 })
