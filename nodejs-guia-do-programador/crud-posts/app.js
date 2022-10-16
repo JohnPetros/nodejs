@@ -1,11 +1,16 @@
 const express = require("express");
 const app = express();
 const handlebars = require('express-handlebars');
+const bodyParser = require('body-parser');
 const Sequelize = require("sequelize");
 
 // Config Template Engine
 app.engine("handlebars", handlebars.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
+
+// Config Body Parser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // Conection to MySql database
 const sequelize = new Sequelize("test", "root", "123456", {
@@ -18,6 +23,7 @@ app.get("/cad", function (req, res) {
   res.render("form")
 });
 app.post("/add", function (req, res) {
+    req.body.content
     res.send("Formulário recebido");
 })
 
