@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-const handlebars = require('express-handlebars');
-const bodyParser = require('body-parser');
+const handlebars = require("express-handlebars");
+const bodyParser = require("body-parser");
 const Sequelize = require("sequelize");
 
 // Config Template Engine
@@ -20,12 +20,12 @@ const sequelize = new Sequelize("test", "root", "123456", {
 
 // Routes
 app.get("/cad", function (req, res) {
-  res.render("form")
+  res.render("form");
 });
 app.post("/add", function (req, res) {
-    req.body.content
-    res.send("Formulário recebido");
-})
+  req.body.content;
+  res.send(`Texto: ${req.body.title} <br> Conteúdo: ${req.body.content}`);
+});
 
 app.listen(8081, function () {
   console.log("Servidor rodando na url http://localhost:8081");
