@@ -5,13 +5,16 @@ const bodyParser = require("body-parser");
 const Post = require("./models/Post");
 
 // Config Template Engine
-app.engine('handlebars', handlebars.engine({ 
-    defaultLayout: 'main', 
+app.engine(
+  "handlebars",
+  handlebars.engine({
+    defaultLayout: "main",
     runtimeOptions: {
-        allowProtoPropertiesByDefault: true,
-        allowProtoMethodsByDefault: true, 
-    },    
-}))
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true,
+    },
+  })
+);
 app.set("view engine", "handlebars");
 
 // Config Body Parser
@@ -20,7 +23,7 @@ app.use(express.json());
 
 // Routes
 app.get("/", function (req, res) {
-  Post.findAll({order: [["id", "DESC"]]}).then(function (posts) {
+  Post.findAll({ order: [["id", "DESC"]] }).then(function (posts) {
     console.log(posts);
     res.render("home", { posts: posts });
   });
@@ -39,6 +42,16 @@ app.post("/add", function (req, res) {
     })
     .catch(function (err) {
       res.send("Houve um error: " + err.message);
+    });
+});
+
+app.get("/delete/:id", function (req, res) {
+  Post.destroy({ where: { id: req.params.id } })
+    .then(function () {
+      res.send("Postagem deletada com sucesso!");
+    })
+    .catch(function (err) {
+      res.send("Essa postagem não existe: " + err.message);
     });
 });
 
