@@ -106,11 +106,12 @@ router.get("/posts", (req, res) => {
     .sort({ date: "desc" })
     .then((posts) => {
       res.render("admin/posts", { posts: posts });
-    }).catch(err => {
-      req.flash("error_msg", "Houve um erro ao listar as postagens")
-      console.log("erro: " + err.message);
-      res.redirect("/admin")
     })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao listar as postagens");
+      console.log("erro: " + err.message);
+      res.redirect("/admin");
+    });
 });
 
 router.get("/posts/add", (req, res) => {
@@ -163,6 +164,54 @@ router.post("/posts/new", (req, res) => {
         res.redirect("/admin/posts");
       });
   }
+});
+
+router.get("/posts/edit/:id", (req, res) => {
+  Post.findOne({ _id: req.params.id })
+    .then((post) => {
+      Category.find()
+        .then((categories) => {
+          res.render("admin/editpost", {
+            categories: categories,
+            post: post,
+          });
+        })
+        .catch((err) => {
+          req.flash("error_msg", "Houve um erro ao listar as categorias");
+          res.redirect("/admin/posts");
+        });
+    })
+    .catch((err) => {
+      req.flash(
+        "error_msg",
+        "Houve um erro ao carregar o formulário de edição"
+      );
+      res.redirect("/admin/posts");
+    });
+});
+
+router.post("/post/edit", (req, res) => {
+  Post.findOne({ _id: req.body.id })
+    .then((post) => {
+      post.title = req.body.title;
+      post.slug = req.body.slug;
+      post.description = req.body.description;
+      post.content = req.body.content;
+      post
+        .save()
+        .then(() => {
+          req.flash("success_msg", "Postagem alterada com sucesso!");
+          res.redirect("/admin/posts");
+        })
+        .catch((err) => {
+          req.flash("error_msg", "Erro interno");
+          res.redirect("/admin/posts")
+        });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao salvar a edição");
+      res.redirect("/admin/posts");
+    });
 });
 
 module.exports = router;
