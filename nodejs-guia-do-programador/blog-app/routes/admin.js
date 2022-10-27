@@ -1,3 +1,4 @@
+const { response } = require("express");
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -61,6 +62,43 @@ router.post("/categories/new", (req, res) => {
         )
       );
   }
+});
+
+router.post("/categories/edit", (req, res) => {
+  Category.findOne({ _id: req.body.id })
+    .then((category) => {
+      category.name = req.body.name;
+      category.slug = req.body.slug;
+
+      category
+        .save()
+        .then(() => {
+          req.flash("success_msg", "Categoria editada com sucesso!");
+          res.redirect("/admin/categories");
+        })
+        .catch((err) => {
+          req.flash(
+            "error_msg",
+            "Houve um erro interno ao salvar a edição da categoria"
+          );
+          res.redirect("/admin/categories");
+        });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao editar a categoria");
+      res.redirect("/admin/categories");
+    });
+});
+
+router.get("/categories/edit/:id", (req, res) => {
+  Category.findOne({ _id: req.params.id })
+    .then((category) => {
+      res.render("admin/editcategories", { category: category });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Esta categoria não existe");
+      res.redirect("/admin/categories");
+    });
 });
 
 module.exports = router;
