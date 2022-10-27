@@ -9,10 +9,6 @@ router.get("/", (req, res) => {
   res.render("admin/index");
 });
 
-router.get("/posts", (req, res) => {
-  res.send("Página de posts");
-});
-
 router.get("/categories", (req, res) => {
   Category.find()
     .sort({ date: "desc" })
@@ -91,14 +87,31 @@ router.post("/categories/edit", (req, res) => {
 });
 
 router.post("/categories/delete", (req, res) => {
-  Category.remove({_id: req.body.id}).then(() => {
-    req.flash("success_msg", "Categoria deletada com sucesso!");
-    res.redirect("/admin/categories")
-  }).catch((err) => {
-    req.flash("error_msg", "Houve um erro ao deletar a categoria!");
-    res.redirect("/admin/categories")
-  })
-})
+  Category.remove({ _id: req.body.id })
+    .then(() => {
+      req.flash("success_msg", "Categoria deletada com sucesso!");
+      res.redirect("/admin/categories");
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao deletar a categoria!");
+      res.redirect("/admin/categories");
+    });
+});
+
+router.get("/posts", (req, res) => {
+  res.render("admin/posts");
+});
+
+router.get("/posts/add", (req, res) => {
+  Category.find()
+    .then((categories) => {
+      res.render("admin/addposts", { categories: categories });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro ao carregar o formulário");
+      res.redirect("/admin");
+    });
+});
 
 router.get("/categories/edit/:id", (req, res) => {
   Category.findOne({ _id: req.params.id })
