@@ -90,6 +90,16 @@ router.post("/categories/edit", (req, res) => {
     });
 });
 
+router.post("/categories/delete", (req, res) => {
+  Category.remove({_id: req.body.id}).then(() => {
+    req.flash("success_msg", "Categoria deletada com sucesso!");
+    res.redirect("/admin/categories")
+  }).catch((err) => {
+    req.flash("error_msg", "Houve um erro ao deletar a categoria!");
+    res.redirect("/admin/categories")
+  })
+})
+
 router.get("/categories/edit/:id", (req, res) => {
   Category.findOne({ _id: req.params.id })
     .then((category) => {
