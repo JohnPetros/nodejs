@@ -4,6 +4,8 @@ const router = express.Router();
 const mongoose = require("mongoose");
 require("../models/Category");
 const Category = mongoose.model("categories");
+require("../models/Post");
+const Post = mongoose.model("posts");
 
 router.get("/", (req, res) => {
   res.render("admin/index");
@@ -99,7 +101,16 @@ router.post("/categories/delete", (req, res) => {
 });
 
 router.get("/posts", (req, res) => {
-  res.render("admin/posts");
+  Post.find()
+    .populate("category")
+    .sort({ date: "desc" })
+    .then((posts) => {
+      res.render("admin/posts", { posts: posts });
+    }).catch(err => {
+      req.flash("error_msg", "Houve um erro ao listar as postagens")
+      console.log("erro: " + err.message);
+      res.redirect("/admin")
+    })
 });
 
 router.get("/posts/add", (req, res) => {
@@ -122,6 +133,36 @@ router.get("/categories/edit/:id", (req, res) => {
       req.flash("error_msg", "Esta categoria não existe");
       res.redirect("/admin/categories");
     });
+});
+
+router.post("/posts/new", (req, res) => {
+  let errors = [];
+
+  if (req.body.category == "0") {
+    errors.push({ text: "Categoria inválida, registre uma categoria" });
+  }
+  if (errors.length > 0) {
+    res.render("admin/addposts", { errors: errors });
+  } else {
+    const newPost = {
+      title: req.body.title,
+      description: req.body.description,
+      content: req.body.content,
+      category: req.body.category,
+      slug: req.body.slug,
+    };
+
+    new Post(newPost)
+      .save()
+      .then(() => {
+        req.flash("success_msg", "Postagem criada com sucesso");
+        res.redirect("/admin/posts");
+      })
+      .catch((err) => {
+        req.flash("error_msg", "Houve um erro na criação do post");
+        res.redirect("/admin/posts");
+      });
+  }
 });
 
 module.exports = router;
