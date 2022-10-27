@@ -13,6 +13,7 @@ mongoose
   });
 
 // Setting model
+/*
 const UserSchema = mongoose.Schema({
   name: {
     type: String,
@@ -54,3 +55,4 @@ new Victor({
   .catch((error) => {
     console.log("Houve um erro ao registrar o usuário: " + error);
   });
+*/

@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const admin = require("./routes/admin");
 const path = require("path");
+const mongoose = require("mongoose");
+
 // const mongoose = require("mongoose");
 
 // Config
@@ -26,7 +28,17 @@ app.engine(
 app.set("view engine", "handlebars");
 
 // Mongoose
-
+mongoose.Promise = global.Promise;
+mongoose
+  .connect(
+    "mongodb+srv://johnpetros:joaodev20@cluster0.zibrbsm.mongodb.net/?retryWrites=true"
+  )
+  .then(() => {
+    console.log("MongoDB conectado com sucesso");
+  })
+  .catch((error) => {
+    console.error("Houve um erro ao se conectar ao MongoDB: " + error.message);
+  });
 
 // Public
 app.use(express.static(path.join(__dirname, "public")))
