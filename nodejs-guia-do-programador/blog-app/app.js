@@ -8,23 +8,28 @@ const path = require("path");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const flash = require("connect-flash");
+const { application } = require("express");
+require("./models/Post");
+const Post = mongoose.model("posts");
 
 // const mongoose = require("mongoose");
 
 // Config
 // Session
-app.use(session({
-  secret: "curso_de_node",
-  resave: true,
-  saveUninitialized: true
-}))
-app.use(flash())
+app.use(
+  session({
+    secret: "curso_de_node",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+app.use(flash());
 // Middleware
 app.use((req, res, next) => {
-  res.locals.success_msg = req.flash("success_msg")
-  res.locals.error_msg = req.flash("error_msg")
-  next()
-})
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  next();
+});
 // Body Parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -56,14 +61,35 @@ mongoose
   });
 
 // Public
-app.use(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
   console.log("middleware");
   next();
-})
+});
 
 // Routes
+app.get("/", (req, res) => {
+  Post.find()
+    .populate("category")
+    .sort({ date: "desc" })
+    .then((posts) => {
+      res.render("index", { posts: posts });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Houve um erro interno");
+      res.redirect("/404");
+    });
+});
+
+app.get("/404", (req, res) => {
+  res.send("Error 404!")
+})
+
+app.get('/posts', (req, res) => {
+  res.send("Lista Posts")
+})
+
 app.use("/admin", admin);
 
 // Others
