@@ -88,4 +88,8 @@ router.post("/register", (req, res) => {
   }
 });
 
+router.get("/login", (req, res) => {
+    res.render("user/login")
+})
+
 module.exports = router;
