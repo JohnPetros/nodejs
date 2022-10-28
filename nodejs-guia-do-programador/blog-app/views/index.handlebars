@@ -1,28 +1,28 @@
 <div class="jumbotron">
   <h1 class="display-4">Bem-vindo ao Blog do Node</h1>
-  <p class="lead">This is a simple hero unit, a simple jumbotron-style component
-    for calling extra attention to featured content or information.</p>
+  <p class="lead">Este é um blog simples desenvolvido com Node.js + Express +
+    MongoDB.</p>
   <hr class="my-4" />
-  <p>It uses utility classes for typography and spacing to space content out
-    within the larger container.</p>
+  <p>Aqui você pode ler sobre as novidades do mundo de programação.</p>
   <p class="lead"><a class="btn btn-primary btn-lg" href="#" role="button">Crie
       uma conta</a></p>
 </div>
 
-<hr>
+<hr />
 
 <h2>Postagens recentes: </h2>
 
 {{#each posts}}
-<div class="card mt-4">
+  <div class="card mt-4">
     <div class="card-body">
-        <h3>{{title}}</h3>
-        <p>{{content}}</p>
-        <a href="/post/{{slug}}"><button class="btn btn-success">Leia mais</button></a><br><br>
-        <small>Categoria: {{category.name}}</small>
-        <small>Data de publicação: {{date}}</small>
+      <h3>{{title}}</h3>
+      <p>{{content}}</p>
+      <a href="/post/{{slug}}"><button class="btn btn-success">Leia mais</button></a><br
+      /><br />
+      <small>Categoria: {{category.name}}</small>
+      <small>Data de publicação: {{date}}</small>
     </div>
-</div>
+  </div>
 {{else}}
-    <h5>Nenhuma postagem</h5>
+  <h5>Nenhuma postagem</h5>
 {{/each}}
