@@ -4,11 +4,11 @@ const handlebars = require("express-handlebars");
 const bodyParser = require("body-parser");
 const app = express();
 const admin = require("./routes/admin");
+const user = require("./routes/user");
 const path = require("path");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const flash = require("connect-flash");
-const { post } = require("./routes/admin");
 require("./models/Post");
 const Post = mongoose.model("posts");
 require("./models/Category");
@@ -149,6 +149,7 @@ app.get("/posts", (req, res) => {
 });
 
 app.use("/admin", admin);
+app.use("/user", user);
 
 // Others
 const PORT = 8081;
