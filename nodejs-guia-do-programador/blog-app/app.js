@@ -14,7 +14,6 @@ const Post = mongoose.model("posts");
 require("./models/Category");
 const Category = mongoose.model("categories");
 const passport = require("passport");
-const { application } = require("express");
 require("./config/auth")(passport);
 
 // const mongoose = require("mongoose");
