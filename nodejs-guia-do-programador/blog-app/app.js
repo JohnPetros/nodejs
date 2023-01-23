@@ -15,7 +15,6 @@ require("./models/Category");
 const Category = mongoose.model("categories");
 const passport = require("passport");
 require("./config/auth")(passport);
-
 // const mongoose = require("mongoose");
 
 // Config
@@ -35,6 +34,8 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
+  res.locals.error = req.flash("error");
+  res.locals.user = req.user || null;
   next();
 });
 // Body Parser
@@ -157,7 +158,7 @@ app.use("/admin", admin);
 app.use("/user", user);
 
 // Others
-const PORT = 8081;
+const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {
-  console.log("Servidor rodando");
+  console.log("Servidor rodando na porta " + PORT);
 });

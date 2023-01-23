@@ -1,4 +1,3 @@
-const { response } = require("express");
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -6,12 +5,13 @@ require("../models/Category");
 const Category = mongoose.model("categories");
 require("../models/Post");
 const Post = mongoose.model("posts");
+const { isAdmin } = require("../helpers/isAdmin");
 
-router.get("/", (req, res) => {
+router.get("/", isAdmin, (req, res) => {
   res.render("admin/index");
 });
 
-router.get("/categories", (req, res) => {
+router.get("/categories", isAdmin, (req, res) => {
   Category.find()
     .sort({ date: "desc" })
     .then((categories) => {
@@ -23,11 +23,11 @@ router.get("/categories", (req, res) => {
     });
 });
 
-router.get("/categories/add", (req, res) => {
+router.get("/categories/add", isAdmin, (req, res) => {
   res.render("admin/addcategories");
 });
 
-router.post("/categories/new", (req, res) => {
+router.post("/categories/new", isAdmin, (req, res) => {
   let errors = [];
 
   if (!req.body.name) {
@@ -40,7 +40,7 @@ router.post("/categories/new", (req, res) => {
     errors.push({ text: "Nome da categoria muito curto" });
   }
   if (errors.length > 0) {
-    res.render("admin/addcategories", { errors: errors });
+    res.render("admin/addcategories", isAdmin, { errors: errors });
   } else {
     const newCategory = {
       name: req.body.name,
@@ -62,7 +62,7 @@ router.post("/categories/new", (req, res) => {
   }
 });
 
-router.post("/categories/edit", (req, res) => {
+router.post("/categories/edit", isAdmin, (req, res) => {
   Category.findOne({ _id: req.body.id })
     .then((category) => {
       category.name = req.body.name;
@@ -88,7 +88,7 @@ router.post("/categories/edit", (req, res) => {
     });
 });
 
-router.post("/categories/delete", (req, res) => {
+router.post("/categories/delete", isAdmin, (req, res) => {
   Category.remove({ _id: req.body.id })
     .then(() => {
       req.flash("success_msg", "Categoria deletada com sucesso!");
@@ -100,7 +100,7 @@ router.post("/categories/delete", (req, res) => {
     });
 });
 
-router.get("/posts", (req, res) => {
+router.get("/posts", isAdmin, (req, res) => {
   Post.find()
     .populate("category")
     .sort({ date: "desc" })
@@ -114,7 +114,7 @@ router.get("/posts", (req, res) => {
     });
 });
 
-router.get("/posts/add", (req, res) => {
+router.get("/posts/add", isAdmin, (req, res) => {
   Category.find()
     .then((categories) => {
       res.render("admin/addposts", { categories: categories });
@@ -125,7 +125,7 @@ router.get("/posts/add", (req, res) => {
     });
 });
 
-router.get("/categories/edit/:id", (req, res) => {
+router.get("/categories/edit/:id", isAdmin, (req, res) => {
   Category.findOne({ _id: req.params.id })
     .then((category) => {
       res.render("admin/editcategories", { category: category });
@@ -136,7 +136,7 @@ router.get("/categories/edit/:id", (req, res) => {
     });
 });
 
-router.post("/posts/new", (req, res) => {
+router.post("/posts/new", isAdmin, (req, res) => {
   let errors = [];
 
   if (req.body.category == "0") {
@@ -166,7 +166,7 @@ router.post("/posts/new", (req, res) => {
   }
 });
 
-router.get("/posts/edit/:id", (req, res) => {
+router.get("/posts/edit/:id", isAdmin, (req, res) => {
   Post.findOne({ _id: req.params.id })
     .then((post) => {
       Category.find()
@@ -190,7 +190,7 @@ router.get("/posts/edit/:id", (req, res) => {
     });
 });
 
-router.post("/post/edit", (req, res) => {
+router.post("/post/edit", isAdmin, (req, res) => {
   Post.findOne({ _id: req.body.id })
     .then((post) => {
       post.title = req.body.title;
@@ -205,7 +205,7 @@ router.post("/post/edit", (req, res) => {
         })
         .catch((err) => {
           req.flash("error_msg", "Erro interno");
-          res.redirect("/admin/posts")
+          res.redirect("/admin/posts");
         });
     })
     .catch((err) => {
@@ -214,14 +214,16 @@ router.post("/post/edit", (req, res) => {
     });
 });
 
-router.get("/posts/delete/:id", (req, res) => {
-  Post.remove({_id: req.params.id}).then(() => {
-    req.flash("success_msg", "Postagem deletada com sucesso!");
-    res.redirect("/admin/posts");
-  }).catch(() => {
-    req.flash("error_msg", "Houve um erro interno")
-    res.redirect("/admin/posts")
-  })
-})
+router.get("/posts/delete/:id", isAdmin, (req, res) => {
+  Post.remove({ _id: req.params.id })
+    .then(() => {
+      req.flash("success_msg", "Postagem deletada com sucesso!");
+      res.redirect("/admin/posts");
+    })
+    .catch(() => {
+      req.flash("error_msg", "Houve um erro interno");
+      res.redirect("/admin/posts");
+    });
+});
 
 module.exports = router;
